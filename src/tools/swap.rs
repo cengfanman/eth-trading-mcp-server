@@ -83,28 +83,43 @@ pub async fn swap_tokens(
         deadline,
     )?;
 
-    // Simulate the swap (eth_call)
-    v2::simulate_swap(provider, config.uniswap_v2_router, signer_addr, swap_data.clone())
-        .await
-        .context("Swap simulation failed - transaction would revert")?;
+    // Get current gas price (always works)
+    let gas_price = provider::get_gas_price(provider).await?;
 
-    debug!("Swap simulation succeeded");
-
-    // Estimate gas
-    let gas_limit = v2::estimate_swap_gas(
+    // Estimate gas (may fail without balance, use fallback)
+    let gas_limit = match v2::estimate_swap_gas(
         provider,
         config.uniswap_v2_router,
         signer_addr,
-        swap_data,
+        swap_data.clone(),
     )
-    .await?;
-
-    // Get current gas price
-    let gas_price = provider::get_gas_price(provider).await?;
+    .await
+    {
+        Ok(gas) => gas,
+        Err(_) => {
+            // Use typical value for Uniswap V2 swap
+            U256::from(150_000u64)
+        }
+    };
 
     // Calculate estimated fee
     let estimated_fee = gas_limit * gas_price;
     let estimated_fee_eth = u256_to_decimal(estimated_fee, 18)?;
+
+    // Simulate the swap (eth_call) - this validates the transaction
+    if let Err(e) = v2::simulate_swap(provider, config.uniswap_v2_router, signer_addr, swap_data.clone()).await {
+        // Simulation failed, but return gas info in error
+        let gas_price_gwei = u256_to_decimal(gas_price, 9)?;
+        return Err(anyhow::anyhow!(
+            "Swap simulation failed (likely insufficient balance or approval). Gas estimate: {} units @ {} gwei = {} ETH. Error: {}",
+            gas_limit,
+            gas_price_gwei,
+            estimated_fee_eth,
+            e
+        ));
+    }
+
+    debug!("Swap simulation succeeded");
 
     info!(
         "Swap simulation: {} -> {} (estimated), gas: {} @ {} gwei",

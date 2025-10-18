@@ -1,16 +1,16 @@
 use anyhow::{Context, Result};
 use ethers::{
-    abi::{encode, Function, Param, ParamType, StateMutability, Token},
+    abi::{Function, Param, ParamType, StateMutability, Token},
     prelude::*,
     types::{Address, Bytes, U256},
 };
-use std::sync::Arc;
 
-use crate::eth::provider::{EthProvider, EthSigner};
+use crate::eth::provider::EthProvider;
 
 const UNISWAP_V2_FACTORY: &str = "0x5C69bEe701ef814a2B6a3EDD4B1652CB9cc5aA6f";
 
 /// Get Uniswap V2 pair address
+#[allow(deprecated)]
 pub async fn get_pair(
     provider: &EthProvider,
     token_a: Address,
@@ -71,6 +71,7 @@ pub async fn get_pair(
 }
 
 /// Get reserves from a Uniswap V2 pair
+#[allow(deprecated)]
 pub async fn get_reserves(
     provider: &EthProvider,
     pair: Address,
@@ -126,6 +127,7 @@ pub async fn get_reserves(
 }
 
 /// Get token0 from pair
+#[allow(deprecated)]
 pub async fn get_token0(provider: &EthProvider, pair: Address) -> Result<Address> {
     let token0_fn = Function {
         name: "token0".to_string(),
@@ -183,6 +185,7 @@ pub fn calculate_price(
 }
 
 /// Get amounts out from Uniswap V2 Router
+#[allow(deprecated)]
 pub async fn get_amounts_out(
     provider: &EthProvider,
     router: Address,
@@ -259,6 +262,7 @@ pub fn build_swap_path(from_token: Address, to_token: Address, weth: Address) ->
 }
 
 /// Encode swapExactTokensForTokens call
+#[allow(deprecated)]
 pub fn encode_swap_exact_tokens_for_tokens(
     amount_in: U256,
     amount_out_min: U256,

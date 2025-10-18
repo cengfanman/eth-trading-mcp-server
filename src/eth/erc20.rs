@@ -1,15 +1,14 @@
 use anyhow::{Context, Result};
 use ethers::{
     abi::{Function, Param, ParamType, StateMutability, Token},
-    contract::Contract,
     prelude::*,
     types::{Address, U256},
 };
-use std::sync::Arc;
 
 use super::provider::EthProvider;
 
 /// Get ERC20 token balance
+#[allow(deprecated)]
 pub async fn get_balance(
     provider: &EthProvider,
     token: Address,
@@ -54,6 +53,7 @@ pub async fn get_balance(
 }
 
 /// Get ERC20 token decimals
+#[allow(deprecated)]
 pub async fn get_decimals(provider: &EthProvider, token: Address) -> Result<u8> {
     let decimals_fn = Function {
         name: "decimals".to_string(),
@@ -90,6 +90,7 @@ pub async fn get_decimals(provider: &EthProvider, token: Address) -> Result<u8> 
 }
 
 /// Get ERC20 token symbol
+#[allow(deprecated)]
 pub async fn get_symbol(provider: &EthProvider, token: Address) -> Result<String> {
     let symbol_fn = Function {
         name: "symbol".to_string(),

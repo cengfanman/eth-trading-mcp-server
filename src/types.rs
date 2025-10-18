@@ -1,4 +1,4 @@
-use ethers::types::{Address, U256};
+use ethers::types::U256;
 use rust_decimal::Decimal;
 use serde::{Deserialize, Serialize};
 

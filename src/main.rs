@@ -43,7 +43,6 @@ async fn main() -> Result<()> {
     let signer = provider::create_signer(&config.rpc_url, &config.private_key, config.chain_id)?;
 
     // Show wallet address
-    use ethers::signers::Signer;
     let wallet_address = signer.address();
     info!("Wallet address: {:?}", wallet_address);
 
