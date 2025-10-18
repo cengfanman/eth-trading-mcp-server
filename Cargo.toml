@@ -1,0 +1,47 @@
+[package]
+name = "eth-trading-mcp-server"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+# Async runtime
+tokio = { version = "1.42", features = ["full"] }
+
+# Ethereum
+ethers = { version = "2.0", features = ["legacy", "ws", "rustls", "abigen"] }
+
+# MCP & JSON-RPC
+serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0"
+
+# Decimal precision
+rust_decimal = { version = "1.33", features = ["serde-with-str"] }
+
+# Logging
+tracing = "0.1"
+tracing-subscriber = { version = "0.3", features = ["env-filter"] }
+
+# Error handling
+anyhow = "1.0"
+thiserror = "1.0"
+
+# Environment
+dotenv = "0.15"
+
+# Hex encoding
+hex = "0.4"
+
+[dev-dependencies]
+tokio-test = "0.4"
+
+[[bin]]
+name = "eth-mcp-server"
+path = "src/main.rs"
+
+[[bin]]
+name = "show-address"
+path = "src/bin/show_address.rs"
+
+[[bin]]
+name = "test-swap"
+path = "src/bin/test_swap.rs"
